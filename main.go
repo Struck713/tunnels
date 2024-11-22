@@ -10,8 +10,8 @@ import (
 
 func main() {
 
-	from := flag.String("from", ":8080", "the server used for tunneling")
-	to := flag.String("to", ":8080", "the service to tunnel")
+	from := flag.String("from", ":8085", "the server used for tunneling")
+	to := flag.String("to", ":8081", "the service to tunnel")
 	flag.Parse()
 
 	switch flag.Arg(0) {

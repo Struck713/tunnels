@@ -7,9 +7,13 @@ import (
 )
 
 func Error(message string) {
-	fmt.Println(color.RedString("Error:") + " " + message)
+	fmt.Println(color.New(color.BgRed).Sprint("Error") + " " + message)
 }
 
-func Info(message string) {
-	fmt.Println(color.CyanString("Tunnel:") + " " + message)
+func Info(module string, message string) {
+	fmt.Println(color.New(color.BgHiBlue).Sprint(module) + " " + message)
+}
+
+func Warning(module string, message string) {
+	fmt.Println(color.New(color.BgHiYellow).Sprint(module) + " " + message)
 }

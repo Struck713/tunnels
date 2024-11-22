@@ -1,10 +1,11 @@
 package server
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"nstruck.dev/tunnels/logger"
 )
 
 func InitServer() {
@@ -15,5 +16,5 @@ func InitServer() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
 
-	fmt.Println("Shutting down..")
+	logger.Info("Server", "Server closed")
 }
