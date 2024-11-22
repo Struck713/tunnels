@@ -1,4 +1,4 @@
-package main
+package logger
 
 import (
 	"fmt"
@@ -6,10 +6,10 @@ import (
 	"github.com/fatih/color"
 )
 
-func PrintError(message string) {
+func Error(message string) {
 	fmt.Println(color.RedString("Error:") + " " + message)
 }
 
-func PrintInfo(message string) {
+func Info(message string) {
 	fmt.Println(color.CyanString("Tunnel:") + " " + message)
 }

@@ -1,16 +1,12 @@
-package main
+package server
 
 import (
 	"fmt"
 	"net"
 )
 
-const ADDRESS = "localhost:8080"
-
-func main() {
-
-	// Listen for incoming connections
-	listener, err := net.Listen("tcp", ADDRESS)
+func InitWeb(address string) {
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -25,11 +21,12 @@ func main() {
 		}
 
 		fmt.Println("New client: " + conn.RemoteAddr().String())
-		go handleClient(conn)
+		go handleWeb(conn)
 	}
+
 }
 
-func handleClient(conn net.Conn) {
+func handleWeb(conn net.Conn) {
 	defer conn.Close()
 	fmt.Fprint(conn, "This is a test\n")
 }
