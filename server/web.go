@@ -6,18 +6,18 @@ import (
 	"nstruck.dev/tunnels/logger"
 )
 
-func InitWeb(address string) {
+func InitWeb(address string, channel chan TunnelRequest) {
 
-	logger.Info("Web", "Binding tunnel server to "+address)
+	logger.Warning("Web", "Binding web server to "+address)
 
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		logger.Error("Web failed to bind to " + address)
+		logger.Error("Web server failed to bind to " + address)
 		return
 	}
 	defer listener.Close()
 
-	logger.Info("Web", "Web server is now awaiting connections..")
+	logger.Warning("Web", "Web server is now awaiting connections..")
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -25,11 +25,9 @@ func InitWeb(address string) {
 			continue
 		}
 
-		logger.Info("Web", "New connection from "+conn.RemoteAddr().String())
-		go handleWeb(conn)
+		defer conn.Close()
+		channel<-TunnelRequest{
+			Metadata: "request was recieved",
+		}
 	}
-}
-
-func handleWeb(conn net.Conn) {
-	defer conn.Close()
 }

@@ -7,7 +7,7 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitTunnel(from string, to string) {
+func InitClient(from string, to string) {
 	logger.Info("Client", "Opening tunnel to "+to+"...")
 	conn, err := net.Dial("tcp", to)
 	if err != nil {
@@ -21,7 +21,11 @@ func InitTunnel(from string, to string) {
 		logger.Error("Failed to handshake with tunnel.")
 		return
 	}
-	logger.Info("Client", "Obtained unique ID from tunnel: " + handshake.Guid)
-	logger.Info("Client", "Tunnel opened. Forwarding information to "+from+".")
 
+	logger.Info("Client", "Obtained unique ID from tunnel: "+handshake.Guid)
+	logger.Info("Client", "Tunnel opened. Forwarding information from "+from+".")
+
+	for {
+
+	}
 }

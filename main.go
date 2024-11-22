@@ -16,10 +16,10 @@ func main() {
 
 	switch flag.Arg(0) {
 	case "client":
-		client.InitTunnel(*from, *to)
+		client.InitClient(*from, *to)
 		break
 	case "server":
-		server.InitServer()
+		server.InitServer(*to)
 		break
 	default:
 		logger.Error("Please either specify 'client' or 'server'")
