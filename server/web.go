@@ -1,33 +1,22 @@
 package server
 
 import (
-	"net"
+	"net/http"
 
 	"nstruck.dev/tunnels/logger"
+	"nstruck.dev/tunnels/socket"
 )
 
-func InitWeb(address string, channel chan TunnelRequest) {
-
+func InitWeb(address string, channel chan<- http.Request, inbound <-chan socket.PageRequestInbound) {
 	logger.Warning("Web", "Binding web server to "+address)
-
-	listener, err := net.Listen("tcp", address)
-	if err != nil {
-		logger.Error("Web server failed to bind to " + address)
-		return
-	}
-	defer listener.Close()
-
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		channel <- *r
+		packet := <-inbound
+		for key := range packet.Headers {
+			w.Header().Add(key, packet.Headers.Get(key))
+		}
+		w.Write([]byte(packet.Content))
+	})
 	logger.Warning("Web", "Web server is now awaiting connections..")
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			logger.Error("Failed to establish web connection")
-			continue
-		}
-
-		defer conn.Close()
-		channel<-TunnelRequest{
-			Metadata: "request was recieved",
-		}
-	}
+	http.ListenAndServe(address, nil)
 }

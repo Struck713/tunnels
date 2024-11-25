@@ -1,5 +1,7 @@
 package socket
 
+import "net/http"
+
 type HandshakeOutbound struct {
 	Guid string
 }
@@ -9,5 +11,6 @@ type PageRequestOutbound struct {
 }
 
 type PageRequestInbound struct {
-	Response string
+	Content string
+	Headers http.Header
 }

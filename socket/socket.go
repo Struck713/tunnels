@@ -11,6 +11,8 @@ func Send(conn net.Conn, packet interface{}) bool {
 	if err != nil {
 		return false
 	}
+
+	data = append(data, '\n')
 	bytes, err := conn.Write(data)
 	if err != nil {
 		return false
@@ -19,13 +21,14 @@ func Send(conn net.Conn, packet interface{}) bool {
 }
 
 func Recieve[T interface{}](conn net.Conn) *T {
-	scanner := bufio.NewScanner(conn)
-	if !scanner.Scan() {
-		return nil;
+	reader := bufio.NewReader(conn)
+	line, err := reader.ReadBytes('\n')
+	if err != nil {
+		return nil
 	}
 
 	output := new(T)
-	err := json.Unmarshal(scanner.Bytes(), output)
+	err = json.Unmarshal(line, output)
 	if err != nil {
 		return nil
 	}

@@ -2,20 +2,22 @@ package server
 
 import (
 	"net"
+	"net/http"
 
 	"github.com/google/uuid"
 	"nstruck.dev/tunnels/logger"
 	"nstruck.dev/tunnels/socket"
 )
 
-type TunnelRequest struct {
-	Metadata string
-}
-
 func InitServer(address string) {
 
-	channel := make(chan TunnelRequest)
-	go InitWeb("localhost:8083", channel)
+	inbound := make(chan http.Request)
+	defer close(inbound)
+
+	outbound := make(chan socket.PageRequestInbound)
+	defer close(outbound)
+
+	go InitWeb("localhost:8083", inbound, outbound)
 
 	logger.Info("Server", "Binding tunnel server to "+address)
 
@@ -33,11 +35,12 @@ func InitServer(address string) {
 			logger.Error("Failed to establish tunnel connection")
 			continue
 		}
-		go handleTunnel(conn, channel)
+		go handleTunnel(conn, inbound, outbound)
 	}
+
 }
 
-func handleTunnel(conn net.Conn, channel chan TunnelRequest) {
+func handleTunnel(conn net.Conn, inbound <-chan http.Request, outbound chan<- socket.PageRequestInbound) {
 	defer conn.Close()
 
 	guid := uuid.New().String()
@@ -45,10 +48,18 @@ func handleTunnel(conn net.Conn, channel chan TunnelRequest) {
 		Guid: guid,
 	})
 	logger.Info("Server", "Issued unique ID to "+conn.RemoteAddr().String()+": "+guid)
-
 	for {
-		request := <-channel
-		logger.Info("Server", "Web request passed: "+request.Metadata)
+		request := <-inbound
+		socket.Send(conn, socket.PageRequestOutbound{
+			Request: request.RequestURI,
+		})
+
+		packet := socket.Recieve[socket.PageRequestInbound](conn)
+		if packet == nil {
+			logger.Error("Failed to recieve response from tunnel.")
+			continue
+		}
+		outbound <- *packet
 	}
 
 }
