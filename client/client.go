@@ -24,14 +24,15 @@ func InitClient(from string, to string) {
 		return
 	}
 
-	logger.Info("Client", "Obtained unique ID from tunnel: "+handshake.Guid)
-	logger.Info("Client", "Tunnel opened. Forwarding information from "+from+".")
+	logger.Info("Client", "GUID: "+handshake.Guid)
+	logger.Info("Client", "Tunnel opened <-> "+from)
 
 	for {
-		packet := socket.Recieve[socket.PageRequestOutbound](conn)
-		logger.Info("Client", "Making request to service: "+from+packet.Request)
+		packet := socket.Recieve[socket.PageRequest](conn)
+		url := from + "/" + packet.URI
+		logger.Info("Client", "Making request to service: "+url)
 
-		req, err := http.NewRequest("GET", from+packet.Request, nil)
+		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			logger.Error("Failed to create request to service.")
 			continue
@@ -52,9 +53,9 @@ func InitClient(from string, to string) {
 			continue
 		}
 
-		socket.Send(conn, socket.PageRequestInbound{
+		socket.Send(conn, socket.PageResponse{
 			Content: string(content),
-			Headers:  resp.Header,
+			Headers: resp.Header,
 		})
 	}
 }

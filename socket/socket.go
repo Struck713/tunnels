@@ -14,8 +14,8 @@ func Send(conn net.Conn, packet interface{}) bool {
 
 	data = append(data, '\n')
 	bytes, err := conn.Write(data)
-	if err != nil {
-		return false
+	for err == nil && bytes < len(data) {
+		bytes, err = conn.Write(data[bytes:])
 	}
 	return bytes == len(data)
 }

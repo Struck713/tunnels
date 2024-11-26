@@ -6,11 +6,12 @@ type HandshakeOutbound struct {
 	Guid string
 }
 
-type PageRequestOutbound struct {
-	Request string
+type PageRequest struct {
+	Headers http.Header
+	URI     string
 }
 
-type PageRequestInbound struct {
+type PageResponse struct {
 	Content string
 	Headers http.Header
 }
