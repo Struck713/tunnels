@@ -13,7 +13,7 @@ func main() {
 	service := flag.String("service", "http://localhost:8085", "the service to tunnel")
 	host := flag.String("host", "localhost:8081", "the tunnel server")
 	web := flag.String("web", "localhost:8083", "the web server")
-	subdomain := flag.String("subdomain", "proxy.nstruck.com:8083", "the subdomain for the web server")
+	subdomain := flag.String("subdomain", "proxy.nstruck.dev", "the subdomain for the web server")
 	flag.Parse()
 
 	switch flag.Arg(0) {
