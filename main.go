@@ -1,5 +1,6 @@
 package main
 
+
 import (
 	"encoding/json"
 	"flag"
@@ -9,6 +10,8 @@ import (
 	"nstruck.dev/tunnels/logger"
 	"nstruck.dev/tunnels/server"
 )
+
+const VERSION = "1.0"
 
 func main() {
 
@@ -24,6 +27,9 @@ func main() {
 		conf := loadConfig[server.Config](*configFile)
 		server.InitServer(conf)
 		break
+	case "version":
+		logger.Info("Version", "v" + VERSION)
+		break;
 	default:
 		logger.Error("Please either specify 'client' or 'server'")
 		break
