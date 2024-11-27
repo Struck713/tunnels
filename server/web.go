@@ -19,6 +19,7 @@ func InitWeb(subdomain string, email string, clients map[string]Client) {
 	certmagic.DefaultACME.Agreed = true
 	certmagic.DefaultACME.Email = email
 	certmagic.DefaultACME.CA = certmagic.LetsEncryptStagingCA
+	certmagic.Default.OnDemand = new(certmagic.OnDemandConfig)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		subdomains := strings.Split(r.Host, ".")
