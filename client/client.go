@@ -9,7 +9,7 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitClient(service string, server string) {
+func InitClient(key string, service string, server string) {
 	logger.Info("Client", "Opening tunnel to "+server+"...")
 	conn, err := net.Dial("tcp", server)
 	if err != nil {
@@ -18,7 +18,11 @@ func InitClient(service string, server string) {
 	}
 	defer conn.Close()
 
-	handshake := socket.Recieve[socket.HandshakeOutbound](conn)
+	socket.Send(conn, socket.HandshakeAuthentication{
+		Key: key,
+	})
+
+	handshake := socket.Recieve[socket.HandshakeIdentity](conn)
 	if handshake == nil {
 		logger.Error("Failed to handshake with tunnel.")
 		return

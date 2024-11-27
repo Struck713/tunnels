@@ -2,9 +2,13 @@ package socket
 
 import "net/http"
 
-type HandshakeOutbound struct {
+type HandshakeIdentity struct {
 	Guid   string
 	Domain string
+}
+
+type HandshakeAuthentication struct {
+	Key string
 }
 
 type PageRequest struct {

@@ -21,6 +21,8 @@ func InitServer(address string, web string, subdomain string) {
 	}
 	defer listener.Close()
 
+	key := uuid.New().String()
+	logger.Info("Server", "Authentication key: "+key)
 	logger.Info("Server", "Tunnel server is now awaiting connections..")
 	for {
 		conn, err := listener.Accept()
@@ -29,11 +31,17 @@ func InitServer(address string, web string, subdomain string) {
 			continue
 		}
 
+		packet := socket.Recieve[socket.HandshakeAuthentication](conn)
+		if packet.Key != key {
+			conn.Close()
+			continue
+		}
+
 		guid := uuid.New().String()
 		logger.Info("Server", conn.RemoteAddr().String()+" <-> "+guid+"."+subdomain)
-		socket.Send(conn, socket.HandshakeOutbound{
-			Guid: guid,
-			Domain:  guid + "." + subdomain,
+		socket.Send(conn, socket.HandshakeIdentity{
+			Guid:   guid,
+			Domain: guid + "." + subdomain,
 		})
 
 		client := Client{

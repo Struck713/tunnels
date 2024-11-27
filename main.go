@@ -18,7 +18,7 @@ func main() {
 
 	switch flag.Arg(0) {
 	case "client":
-		client.InitClient(*service, *host)
+		client.InitClient(flag.Arg(1), *service, *host)
 		break
 	case "server":
 		server.InitServer(*host, *web, *subdomain)
