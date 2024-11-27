@@ -9,7 +9,15 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitClient(key string, service string, server string) {
+type Config struct {
+	Service string `json:"service"`
+	Server  string `json:"server"`
+}
+
+func InitClient(key string, config Config) {
+	server := config.Server
+	service := config.Service
+
 	logger.Info("Client", "Opening tunnel to "+server+"...")
 	conn, err := net.Dial("tcp", server)
 	if err != nil {

@@ -8,9 +8,18 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitServer(address string, subdomain string, email string) {
+type Config struct {
+	Address   string `json:"address"`
+	Subdomain string `json:"subdomain"`
+	Email     string `json:"email"`
+}
+
+func InitServer(config Config) {
+	address := config.Address
+	subdomain := config.Subdomain
+
 	clients := make(map[string]Client)
-	go InitWeb(subdomain, email, clients)
+	go InitWeb(subdomain, config.Email, clients)
 
 	logger.Info("Server", "Binding tunnel server to "+address)
 

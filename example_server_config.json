@@ -1,0 +1,5 @@
+{
+  "address": "0.0.0.0:9999",
+  "subdomain": "proxy.example.org",
+  "email": "mail@example.org"
+}

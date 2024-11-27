@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/fatih/color"
 )
@@ -13,6 +14,11 @@ func Debug(message any) {
 
 func Error(message string) {
 	fmt.Println(color.New(color.BgRed).Sprint("Error") + " " + message)
+}
+
+func Panic(message string) {
+	Error(message)
+	os.Exit(1)
 }
 
 func Info(module string, message string) {
