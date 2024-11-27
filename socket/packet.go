@@ -3,7 +3,8 @@ package socket
 import "net/http"
 
 type HandshakeOutbound struct {
-	Guid string
+	Guid   string
+	Domain string
 }
 
 type PageRequest struct {

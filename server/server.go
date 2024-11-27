@@ -8,11 +8,9 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitServer(address string) {
-
-	web := "localhost:8083"
+func InitServer(address string, web string, subdomain string) {
 	clients := make(map[string]Client)
-	go InitWeb(web, clients)
+	go InitWeb(web, subdomain, clients)
 
 	logger.Info("Server", "Binding tunnel server to "+address)
 
@@ -32,9 +30,10 @@ func InitServer(address string) {
 		}
 
 		guid := uuid.New().String()
-		logger.Info("Server", conn.RemoteAddr().String()+" <-> "+web+"/"+guid)
+		logger.Info("Server", conn.RemoteAddr().String()+" <-> "+guid+"."+subdomain)
 		socket.Send(conn, socket.HandshakeOutbound{
 			Guid: guid,
+			Domain:  guid + "." + subdomain,
 		})
 
 		client := Client{

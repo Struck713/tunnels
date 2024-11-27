@@ -8,19 +8,23 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitWeb(address string, clients map[string]Client) {
+func InitWeb(address string, subdomain string, clients map[string]Client) {
 	logger.Warning("Web", "Binding web server to "+address)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		paths := strings.Split(r.RequestURI[1:], "/")
-		guid := paths[0]
-		client, exists := clients[guid]
+		subdomains := strings.Split(r.Host, ".")
+		domain := strings.Join(subdomains[1:], ".")
+		if domain != subdomain {
+			return
+		}
+
+		client, exists := clients[subdomains[0]]
 		if !exists {
 			w.Write([]byte("No page found."))
 			return
 		}
 
 		client.request <- socket.PageRequest{
-			URI:     strings.Join(paths[1:], "/"),
+			URI:     r.RequestURI[1:],
 			Headers: r.Header,
 		}
 		packet := <-client.response

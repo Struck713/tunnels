@@ -9,11 +9,11 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitClient(from string, to string) {
-	logger.Info("Client", "Opening tunnel to "+to+"...")
-	conn, err := net.Dial("tcp", to)
+func InitClient(service string, server string) {
+	logger.Info("Client", "Opening tunnel to "+server+"...")
+	conn, err := net.Dial("tcp", server)
 	if err != nil {
-		logger.Error("Failed to connect to " + to)
+		logger.Error("Failed to connect to " + server)
 		return
 	}
 	defer conn.Close()
@@ -24,13 +24,14 @@ func InitClient(from string, to string) {
 		return
 	}
 
-	logger.Info("Client", "GUID: "+handshake.Guid)
-	logger.Info("Client", "Tunnel opened <-> "+from)
+	domain := handshake.Domain
+	logger.Info("Client", "URL: "+domain)
+	logger.Info("Client", "Tunnel opened <-> "+service)
 
 	for {
 		packet := socket.Recieve[socket.PageRequest](conn)
-		url := from + "/" + packet.URI
-		logger.Info("Client", "Making request to service: "+url)
+		url := service + "/" + packet.URI
+		logger.Info("Client", url+" <-> "+domain+"/"+packet.URI)
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {

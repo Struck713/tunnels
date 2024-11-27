@@ -10,16 +10,18 @@ import (
 
 func main() {
 
-	from := flag.String("from", "http://localhost:8085", "the server used for tunneling")
-	to := flag.String("to", "localhost:8081", "the service to tunnel")
+	service := flag.String("service", "http://localhost:8085", "the service to tunnel")
+	host := flag.String("host", "localhost:8081", "the tunnel server")
+	web := flag.String("web", "localhost:8083", "the web server")
+	subdomain := flag.String("subdomain", "proxy.nstruck.com:8083", "the subdomain for the web server")
 	flag.Parse()
 
 	switch flag.Arg(0) {
 	case "client":
-		client.InitClient(*from, *to)
+		client.InitClient(*service, *host)
 		break
 	case "server":
-		server.InitServer(*to)
+		server.InitServer(*host, *web, *subdomain)
 		break
 	default:
 		logger.Error("Please either specify 'client' or 'server'")
