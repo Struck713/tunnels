@@ -13,7 +13,7 @@ import (
 	"nstruck.dev/tunnels/socket"
 )
 
-func InitWeb(address string, subdomain string, clients map[string]Client) {
+func InitWeb(subdomain string, clients map[string]Client) {
 
 	logger.Warning("Web", "Assigning autocerts to: *."+subdomain)
 
@@ -29,7 +29,7 @@ func InitWeb(address string, subdomain string, clients map[string]Client) {
 		Cache: autocert.DirCache("certs"),
 	}
 
-	logger.Warning("Web", "Binding web server to "+address)
+	logger.Warning("Web", "Binding web server to 0.0.0.0:80")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		subdomains := strings.Split(r.Host, ".")
 		domain := strings.Join(subdomains[1:], ".")
@@ -64,6 +64,6 @@ func InitWeb(address string, subdomain string, clients map[string]Client) {
 		},
 	}
 
-	go http.ListenAndServe(address, certManager.HTTPHandler(nil))
+	go http.ListenAndServe(":http", certManager.HTTPHandler(nil))
 	logger.Error(server.ListenAndServeTLS("", "").Error())
 }
