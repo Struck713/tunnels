@@ -9,9 +9,10 @@ import (
 )
 
 type Config struct {
-	Address   string `json:"address"`
-	Subdomain string `json:"subdomain"`
-	Email     string `json:"email"`
+	Address       string `json:"address"`
+	Subdomain     string `json:"subdomain"`
+	CloudflareKey string `json:"cloudflare_key"`
+	Email         string `json:"email"`
 }
 
 func InitServer(config Config) {
@@ -19,7 +20,7 @@ func InitServer(config Config) {
 	subdomain := config.Subdomain
 
 	clients := make(map[string]Client)
-	go InitWeb(subdomain, config.Email, clients)
+	go InitWeb(config, clients)
 
 	logger.Info("Server", "Binding tunnel server to "+address)
 
