@@ -22,7 +22,7 @@ func InitWeb(config Config, clients map[string]Client) {
 
 	certmagic.DefaultACME.Agreed = true
 	certmagic.DefaultACME.Email = config.Email
-	certmagic.DefaultACME.CA = certmagic.LetsEncryptStagingCA
+	certmagic.DefaultACME.CA = certmagic.LetsEncryptProductionCA
 	certmagic.Default.Logger, _ = zap.Config{
 		Encoding: "console",
 	}.Build()
